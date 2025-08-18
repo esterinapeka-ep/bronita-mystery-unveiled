@@ -1,11 +1,260 @@
+let canvas, ctx;
+let currentScene = 1;
+let totalScenes = 25;
+let bgImage = new Image();
+let collectibles = [];
+let collected = 0;
+
+let bgMusic = null;
+let musicMap = {
+  1: "assets/sounds/castle_night.mp3",
+  6: "assets/sounds/dark_forest.mp3",
+  11: "assets/sounds/forest_night.mp3",
+  16: "assets/sounds/night_lands_magic.mp3",
+  21: "assets/sounds/final_glow.mp3"
+};
+let successChime = new Audio("assets/sounds/success_chime.mp3");
+
+// Characters
+let bronitaImg = loadImage("assets/images/bronita.png");
+let luceoImg = loadImage("assets/images/luceo.png");
+let lemonaImg = loadImage("assets/images/lemona.png");
+let deprimioImg = loadImage("assets/images/deprimio.png");
+let hourglassImg = loadImage("assets/images/hourglass.png");
+
+// Deprimio
+let deprimio = {x: 0, y: 0, dx: 5, dy: 5, active: false};
+let timeLeft = 10;
+let timerInterval = null;
+let deprimioTimer = 0;
+let gameOver = false;
+let adsUsed = false;
+
 function startGame() {
   document.getElementById('menu').style.display = 'none';
   document.getElementById('game').style.display = 'block';
-  let canvas = document.getElementById('gameCanvas');
-  let ctx = canvas.getContext('2d');
+
+  canvas = document.getElementById('gameCanvas');
+  ctx = canvas.getContext('2d');
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  ctx.fillStyle = 'white';
-  ctx.font = '30px Arial';
-  ctx.fillText('Game Placeholder - Replace images and sounds in assets/', 50, 100);
+
+  playMusicForScene(currentScene);
+  loadScene(currentScene);
+
+  canvas.addEventListener("click", checkCollectibleClick);
+  canvas.addEventListener("click", checkHourglassClick);
+}
+
+function loadScene(sceneNumber) {
+  if (timerInterval) clearInterval(timerInterval);
+  timeLeft = 10;
+  deprimio.active = false;
+  deprimioTimer = 0;
+  adsUsed = false;
+
+  bgImage.src = `assets/images/scene${sceneNumber}.jpg`;
+  bgImage.onload = function() {
+    collectibles = [];
+    spawnCollectibles();
+    drawScene();
+
+    // Countdown timer
+    timerInterval = setInterval(() => {
+      if (timeLeft > 0) {
+        timeLeft--;
+      } else {
+        if (!deprimio.active) {
+          deprimio.active = true;
+          deprimio.x = 0;
+          deprimio.y = 0;
+          deprimioTimer = 10;
+        }
+      }
+    }, 1000);
+  };
+}
+
+function spawnCollectibles() {
+  collectibles.push({
+    type: "firefly",
+    img: loadImage("assets/images/firefly.png"),
+    x: Math.random() * (canvas.width - 50),
+    y: Math.random() * (canvas.height - 50),
+    size: 40,
+    found: false
+  });
+
+  collectibles.push({
+    type: "snowflake",
+    img: loadImage("assets/images/snowflake.png"),
+    x: Math.random() * (canvas.width - 50),
+    y: Math.random() * (canvas.height - 50),
+    size: 40,
+    found: false
+  });
+}
+
+function loadImage(src) {
+  let img = new Image();
+  img.src = src;
+  return img;
+}
+
+function drawScene() {
+  if (gameOver) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(deprimioImg, 0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "red";
+    ctx.font = "60px Arial";
+    ctx.fillText("GAME OVER", canvas.width / 2 - 150, canvas.height / 2);
+    return;
+  }
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
+
+  // Character by scene
+  let charImg = null;
+  if (currentScene >= 1 && currentScene <= 3) charImg = bronitaImg;
+  else if (currentScene >= 4 && currentScene <= 14) charImg = luceoImg;
+  else if (currentScene >= 15 && currentScene <= 19) charImg = bronitaImg;
+  else if (currentScene >= 20 && currentScene <= 25) charImg = lemonaImg;
+
+  if (charImg) {
+    ctx.drawImage(charImg, canvas.width - 250, canvas.height - 400, 200, 300);
+  }
+
+  // Collectibles
+  collectibles.forEach(c => {
+    if (!c.found) ctx.drawImage(c.img, c.x, c.y, c.size, c.size);
+  });
+
+  // Deprimio active
+  if (deprimio.active) {
+    ctx.drawImage(deprimioImg, deprimio.x, deprimio.y, 150, 200);
+    deprimio.x += deprimio.dx;
+    deprimio.y += deprimio.dy;
+
+    if (deprimio.x <= 0 || deprimio.x + 150 >= canvas.width) deprimio.dx *= -1;
+    if (deprimio.y <= 0 || deprimio.y + 200 >= canvas.height) deprimio.dy *= -1;
+
+    if (deprimioTimer > 0) {
+      deprimioTimer -= 0.02;
+    } else {
+      gameOver = true;
+    }
+  }
+
+  // HUD
+  ctx.fillStyle = "white";
+  ctx.font = "20px Arial";
+  ctx.fillText(`Scene ${currentScene} / ${totalScenes}`, 20, 30);
+  ctx.fillText(`Collected: ${collected}`, 20, 60);
+  if (!deprimio.active) {
+    ctx.fillText(`Time left: ${timeLeft}`, 20, 90);
+  } else {
+    ctx.fillStyle = "red";
+    ctx.fillText(`Deprimio takeover!`, 20, 90);
+  }
+
+  // Hourglass icon if not used
+  if (!adsUsed) {
+    ctx.drawImage(hourglassImg, canvas.width - 80, 20, 50, 50);
+  }
+
+  requestAnimationFrame(drawScene);
+}
+
+function checkCollectibleClick(e) {
+  if (gameOver) return;
+
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
+
+  collectibles.forEach(c => {
+    if (!c.found &&
+        mouseX >= c.x && mouseX <= c.x + c.size &&
+        mouseY >= c.y && mouseY <= c.y + c.size) {
+      c.found = true;
+      collected++;
+
+      if (collectibles.every(c => c.found)) {
+        deprimio.active = false;
+        clearInterval(timerInterval);
+        setTimeout(nextScene, 1000);
+      }
+    }
+  });
+}
+
+function checkHourglassClick(e) {
+  if (gameOver || adsUsed) return;
+
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
+
+  if (!adsUsed &&
+      mouseX >= canvas.width - 80 && mouseX <= canvas.width - 30 &&
+      mouseY >= 20 && mouseY <= 70) {
+    prolongTime();
+  }
+}
+
+function prolongTime() {
+  if (gameOver || adsUsed) return;
+
+  if (!deprimio.active) {
+    timeLeft += 10;
+  } else {
+    deprimioTimer += 10;
+  }
+
+  adsUsed = true;
+}
+
+function nextScene() {
+  if (currentScene < totalScenes) {
+    currentScene++;
+    playMusicForScene(currentScene);
+    loadScene(currentScene);
+  } else {
+    endGame();
+  }
+}
+
+function playMusicForScene(scene) {
+  if (bgMusic) {
+    bgMusic.pause();
+    bgMusic.currentTime = 0;
+  }
+
+  let track = null;
+  for (let startScene in musicMap) {
+    if (scene >= startScene) {
+      track = musicMap[startScene];
+    }
+  }
+
+  if (track) {
+    bgMusic = new Audio(track);
+    bgMusic.loop = true;
+    bgMusic.volume = 0.5;
+    bgMusic.play();
+  }
+}
+
+function endGame() {
+  if (bgMusic) {
+    bgMusic.pause();
+    bgMusic.currentTime = 0;
+  }
+  successChime.play();
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "white";
+  ctx.font = "40px Arial";
+  ctx.fillText("Congratulations! You finished the game!", 50, canvas.height / 2);
 }
