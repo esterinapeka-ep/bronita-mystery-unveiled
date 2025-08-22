@@ -51,7 +51,7 @@ function startGame() {
 
   playMusicForScene(currentScene);
   loadScene(currentScene);
-
+  
 canvas.addEventListener("click", checkCollectibleClick);
 canvas.addEventListener("click", checkHourglassClick);
 
@@ -60,7 +60,7 @@ canvas.addEventListener("touchstart", function(e) {
   let fakeEvent = {
     clientX: touch.clientX,
     clientY: touch.clientY
-  }
+  };
   checkCollectibleClick(fakeEvent);
   checkHourglassClick(fakeEvent);
   e.preventDefault(); // stop scrolling/zooming
