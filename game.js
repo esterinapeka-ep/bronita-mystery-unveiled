@@ -95,9 +95,9 @@ function spawnCollectibles(minimum = 10) {
     collectibles.push({
       type,
       img: loadImage(`assets/images/${type}.png`),
-      x: Math.random() * (canvas.width - 50),
-      y: Math.random() * (canvas.height - 50),
-      size: 50,  // bigger size (50px)
+      x: Math.random() * (canvas.width - 30),
+      y: Math.random() * (canvas.height - 30),
+      size: 30,  // bigger size (30px)
       found: false
     });
   }
