@@ -17,6 +17,20 @@ let musicMap = {
 };
 let successChime = new Audio("assets/sounds/success_chime.mp3");
 
+// --- Utility: loadImage must be first ---
+function loadImage(src) {
+  let img = new Image();
+  img.src = src;
+  return img;
+}
+
+// Characters
+let bronitaImg = loadImage("assets/images/bronita.png");
+let luceoImg = loadImage("assets/images/luceo.png");
+let lemonaImg = loadImage("assets/images/lemona.png");
+let deprimioImg = loadImage("assets/images/deprimio.png");
+let hourglassImg = loadImage("assets/images/hourglass.png");
+
 // Characters
 let bronitaImg = loadImage("assets/images/bronita.png");
 let luceoImg = loadImage("assets/images/luceo.png");
