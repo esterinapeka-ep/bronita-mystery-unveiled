@@ -25,6 +25,11 @@ let lemonaImg = loadImage("assets/images/lemona.png");
 let deprimioImg = loadImage("assets/images/deprimio.png");
 let hourglassImg = loadImage("assets/images/hourglass.png");
 
+//collectibles
+
+let fireflyImg = loadImage("assets/images/firefly.png");
+let snowflakeImg = loadImage("assets/images/snowflake.png");
+
 // Deprimio
 let deprimio = {x: 0, y: 0, dx: 5, dy: 5, active: false};
 let timeLeft = 20;
