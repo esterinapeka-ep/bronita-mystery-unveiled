@@ -1,3 +1,6 @@
+
+// game.js
+
 let canvas, ctx;
 let currentScene = 1;
 let totalScenes = 25;
@@ -24,12 +27,13 @@ let hourglassImg = loadImage("assets/images/hourglass.png");
 
 // Deprimio
 let deprimio = {x: 0, y: 0, dx: 5, dy: 5, active: false};
-let timeLeft = 10;
+let timeLeft = 20;
 let timerInterval = null;
 let deprimioTimer = 0;
 let gameOver = false;
 let adsUsed = false;
 
+// --- START GAME ---
 function startGame() {
   document.getElementById('menu').style.display = 'none';
   document.getElementById('game').style.display = 'block';
@@ -48,7 +52,7 @@ function startGame() {
 
 function loadScene(sceneNumber) {
   if (timerInterval) clearInterval(timerInterval);
-  timeLeft = 10;
+  timeLeft = 20;
   deprimio.active = false;
   deprimioTimer = 0;
   adsUsed = false;
@@ -56,7 +60,7 @@ function loadScene(sceneNumber) {
   bgImage.src = `assets/images/scene${sceneNumber}.jpg`;
   bgImage.onload = function() {
     collectibles = [];
-    spawnCollectibles();
+    spawnCollectibles(10); // spawn at least 10 collectibles
     drawScene();
 
     // Countdown timer
@@ -68,31 +72,30 @@ function loadScene(sceneNumber) {
           deprimio.active = true;
           deprimio.x = 0;
           deprimio.y = 0;
-          deprimioTimer = 10;
+          deprimioTimer = 20;
         }
       }
     }, 1000);
   };
 }
 
-function spawnCollectibles() {
-  collectibles.push({
-    type: "firefly",
-    img: loadImage("assets/images/firefly.png"),
-    x: Math.random() * (canvas.width - 50),
-    y: Math.random() * (canvas.height - 50),
-    size: 40,
-    found: false
-  });
+function spawnCollectibles(minimum = 10) {
+  const collectibleTypes = [
+    "firefly",
+    "snowflake"
+  ];
 
-  collectibles.push({
-    type: "snowflake",
-    img: loadImage("assets/images/snowflake.png"),
-    x: Math.random() * (canvas.width - 50),
-    y: Math.random() * (canvas.height - 50),
-    size: 40,
-    found: false
-  });
+  for (let i = 0; i < minimum; i++) {
+    let type = collectibleTypes[i % collectibleTypes.length];
+    collectibles.push({
+      type,
+      img: loadImage(`assets/images/${type}.png`),
+      x: Math.random() * (canvas.width - 30),
+      y: Math.random() * (canvas.height - 30),
+      size: 20,
+      found: false
+    });
+  }
 }
 
 function loadImage(src) {
@@ -207,9 +210,9 @@ function prolongTime() {
   if (gameOver || adsUsed) return;
 
   if (!deprimio.active) {
-    timeLeft += 10;
+    timeLeft += 20;
   } else {
-    deprimioTimer += 10;
+    deprimioTimer += 20;
   }
 
   adsUsed = true;
@@ -254,7 +257,7 @@ function endGame() {
   successChime.play();
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "white";
+  ctx.fillStyle = "forestgreen";
   ctx.font = "40px Arial";
   ctx.fillText("Congratulations! You finished the game!", 50, canvas.height / 2);
 }
