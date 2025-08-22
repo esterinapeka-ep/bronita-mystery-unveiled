@@ -38,6 +38,9 @@ let deprimioTimer = 0;
 let gameOver = false;
 let adsUsed = false;
 
+// Floating text effects
+let floatingTexts = [];
+
 // --- START GAME ---
 function startGame() {
   document.getElementById('menu').style.display = 'none';
@@ -138,6 +141,22 @@ function drawScene() {
     if (!c.found) ctx.drawImage(c.img, c.x, c.y, c.size, c.size);
   });
 
+  // Floating texts
+  floatingTexts.forEach((ft, index) => {
+    ctx.fillStyle = `rgba(255, 255, 0, ${ft.alpha})`; // yellow
+    ctx.font = "20px Arial";
+    ctx.fillText(ft.text, ft.x, ft.y);
+
+    // Animate upward and fade
+    ft.y -= 1;
+    ft.alpha -= 0.02;
+
+    // Remove when invisible
+    if (ft.alpha <= 0) {
+      floatingTexts.splice(index, 1);
+    }
+  });
+
   // Deprimio active
   if (deprimio.active) {
     ctx.drawImage(deprimioImg, deprimio.x, deprimio.y, 150, 200);
@@ -155,7 +174,7 @@ function drawScene() {
   }
 
   // HUD
-  ctx.fillStyle = "white";
+  ctx.fillStyle = "forestgreen";
   ctx.font = "20px Arial";
   ctx.fillText(`Scene ${currentScene} / ${totalScenes}`, 20, 30);
   ctx.fillText(`Collected: ${collected}`, 20, 60);
@@ -187,6 +206,17 @@ function checkCollectibleClick(e) {
         mouseY >= c.y && mouseY <= c.y + c.size) {
       c.found = true;
       collected++;
+
+      // Play chime sound
+      successChime.play();
+
+      // Add floating +1 effect
+      floatingTexts.push({
+        text: "+1",
+        x: c.x,
+        y: c.y,
+        alpha: 1.0
+      });
 
       if (collectibles.every(c => c.found)) {
         deprimio.active = false;
