@@ -93,14 +93,14 @@ function spawnCollectibles(minimum = 10) {
     "snowflake"
   ];
 
-  for (let i = 0; i < minimum; i++) {
+ for (let i = 0; i < minimum; i++) {
     let type = collectibleTypes[i % collectibleTypes.length];
     collectibles.push({
       type,
       img: loadImage(`assets/images/${type}.png`),
-      x: Math.random() * (canvas.width - 30),
-      y: Math.random() * (canvas.height - 30),
-      size: 20,
+      x: Math.random() * (canvas.width - 50),
+      y: Math.random() * (canvas.height - 50),
+      size: 50,  // bigger size (50px)
       found: false
     });
   }
@@ -201,11 +201,15 @@ function checkCollectibleClick(e) {
   const mouseY = e.clientY - rect.top;
 
   collectibles.forEach(c => {
-    if (!c.found &&
-        mouseX >= c.x && mouseX <= c.x + c.size &&
-        mouseY >= c.y && mouseY <= c.y + c.size) {
-      c.found = true;
-      collected++;
+    if (!c.found) {
+      // Circle hitbox detection
+      let dx = mouseX - (c.x + c.size / 2);
+      let dy = mouseY - (c.y + c.size / 2);
+      let distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < c.size / 2) {
+        c.found = true;
+        collected++;
 
       // Play chime sound
       successChime.play();
