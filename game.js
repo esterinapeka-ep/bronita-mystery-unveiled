@@ -41,7 +41,7 @@ let floatingTexts = [];
 
 // --- START GAME ---
 function startGame() {
-  console.log("Start Game button clicked!");
+  console.log("Start Game button clicked!"); // ✅ debug
   
   document.getElementById('menu').style.display = 'none';
   document.getElementById('game').style.display = 'block';
