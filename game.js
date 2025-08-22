@@ -88,13 +88,7 @@ function loadScene(sceneNumber) {
 }
 
 function spawnCollectibles(minimum = 10) {
-  if (!c.found &&
-    mouseX >= c.x && mouseX <= c.x + c.size &&
-    mouseY >= c.y && mouseY <= c.y + c.size) {
-  c.found = true;
-  collected++;
-  }
-}
+    
   const collectibleTypes = ["firefly", "snowflake"];
 
   for (let i = 0; i < minimum; i++) {
@@ -202,20 +196,35 @@ function drawScene() {
 function checkCollectibleClick(e) {
   if (gameOver) return;
 
-  const rect = canvas.getBoundingClientRect();
-  const mouseX = e.clientX - rect.left;
-  const mouseY = e.clientY - rect.top;
+let dx = mouseX - (c.x + c.size/2);
+let dy = mouseY - (c.y + c.size/2);
+let distance = Math.sqrt(dx*dx + dy*dy);
 
-  collectibles.forEach(c => {
-    if (!c.found) {
-      // Circle hitbox detection
-      let dx = mouseX - (c.x + c.size / 2);
-      let dy = mouseY - (c.y + c.size / 2);
-      let distance = Math.sqrt(dx * dx + dy * dy);
+if (!c.found && distance < c.size/2) {
+  c.found = true;
+  collected++;
+  successChime.play();
+}
 
-      if (distance < c.size / 2) {
-        c.found = true;
-        collected++;
+      // Play chime sound
+      successChime.play();
+
+      // Add floating +1 effect
+      floatingTexts.push({
+        text: "+1",
+        x: c.x,
+        y: c.y,
+        alpha: 1.0
+      });
+
+      if (collectibles.every(c => c.found)) {
+        deprimio.active = false;
+        clearInterval(timerInterval);
+        setTimeout(nextScene, 1000);
+      }
+    }
+  });
+}
 
         // Play chime sound
         successChime.play();
