@@ -41,8 +41,6 @@ let floatingTexts = [];
 
 // --- START GAME ---
 function startGame() {
-  console.log("Start Game button clicked!"); 
-  
   document.getElementById('menu').style.display = 'none';
   document.getElementById('game').style.display = 'block';
 
@@ -54,9 +52,19 @@ function startGame() {
   playMusicForScene(currentScene);
   loadScene(currentScene);
 
-  canvas.addEventListener("click", checkCollectibleClick);
-  canvas.addEventListener("click", checkHourglassClick);
-}
+canvas.addEventListener("click", checkCollectibleClick);
+canvas.addEventListener("click", checkHourglassClick);
+
+canvas.addEventListener("touchstart", function(e) {
+  let touch = e.touches[0];
+  let fakeEvent = {
+    clientX: touch.clientX,
+    clientY: touch.clientY
+  };
+  checkCollectibleClick(fakeEvent);
+  checkHourglassClick(fakeEvent);
+  e.preventDefault(); // stop scrolling/zooming
+});
 
 function loadScene(sceneNumber) {
   if (timerInterval) clearInterval(timerInterval);
