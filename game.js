@@ -17,13 +17,6 @@ let musicMap = {
 };
 let successChime = new Audio("assets/sounds/success_chime.mp3");
 
-// --- Utility: loadImage must be first ---
-function loadImage(src) {
-  let img = new Image();
-  img.src = src;
-  return img;
-}
-
 // Characters
 let bronitaImg = loadImage("assets/images/bronita.png");
 let luceoImg = loadImage("assets/images/luceo.png");
@@ -48,6 +41,8 @@ let floatingTexts = [];
 
 // --- START GAME ---
 function startGame() {
+  console.log("Start Game button clicked!"); 
+  
   document.getElementById('menu').style.display = 'none';
   document.getElementById('game').style.display = 'block';
 
@@ -107,6 +102,8 @@ function spawnCollectibles(minimum = 10) {
     });
   }
 }
+
+// --- Utility: loadImage must be first ---
 
 function loadImage(src) {
   let img = new Image();
