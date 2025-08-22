@@ -31,13 +31,6 @@ let lemonaImg = loadImage("assets/images/lemona.png");
 let deprimioImg = loadImage("assets/images/deprimio.png");
 let hourglassImg = loadImage("assets/images/hourglass.png");
 
-// Characters
-let bronitaImg = loadImage("assets/images/bronita.png");
-let luceoImg = loadImage("assets/images/luceo.png");
-let lemonaImg = loadImage("assets/images/lemona.png");
-let deprimioImg = loadImage("assets/images/deprimio.png");
-let hourglassImg = loadImage("assets/images/hourglass.png");
-
 //Collectibles
 let fireflyImg = loadImage("assets/images/firefly.png");
 let snowflakeImg = loadImage("assets/images/snowflake.png");
@@ -54,8 +47,7 @@ let adsUsed = false;
 let floatingTexts = [];
 
 // --- START GAME ---
-function startGame() {
-  console.log("Start Game button clicked!"); // ✅ debug
+console.log("Game started");
   
   document.getElementById('menu').style.display = 'none';
   document.getElementById('game').style.display = 'block';
@@ -348,23 +340,6 @@ let adsUsed = false;
 
 // Floating text effects
 let floatingTexts = [];
-
-// --- START GAME ---
-function startGame() {
-  document.getElementById('menu').style.display = 'none';
-  document.getElementById('game').style.display = 'block';
-
-  canvas = document.getElementById('gameCanvas');
-  ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  playMusicForScene(currentScene);
-  loadScene(currentScene);
-
-  canvas.addEventListener("click", checkCollectibleClick);
-  canvas.addEventListener("click", checkHourglassClick);
-}
 
 function loadScene(sceneNumber) {
   if (timerInterval) clearInterval(timerInterval);
