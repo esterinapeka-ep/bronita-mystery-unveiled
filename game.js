@@ -88,6 +88,13 @@ function loadScene(sceneNumber) {
 }
 
 function spawnCollectibles(minimum = 10) {
+  if (!c.found &&
+    mouseX >= c.x && mouseX <= c.x + c.size &&
+    mouseY >= c.y && mouseY <= c.y + c.size) {
+  c.found = true;
+  collected++;
+  }
+}
   const collectibleTypes = ["firefly", "snowflake"];
 
   for (let i = 0; i < minimum; i++) {
