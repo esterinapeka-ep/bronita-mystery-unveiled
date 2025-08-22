@@ -47,8 +47,7 @@ let adsUsed = false;
 let floatingTexts = [];
 
 // --- START GAME ---
-console.log("Game started");
-  
+function startGame() {
   document.getElementById('menu').style.display = 'none';
   document.getElementById('game').style.display = 'block';
 
