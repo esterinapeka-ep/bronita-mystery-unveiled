@@ -174,7 +174,7 @@ function drawScene() {
   }
 
   // HUD
-  ctx.fillStyle = "forestgreen";
+  ctx.fillStyle = "yellow";
   ctx.font = "20px Arial";
   ctx.fillText(`Scene ${currentScene} / ${totalScenes}`, 20, 30);
   ctx.fillText(`Collected: ${collected}`, 20, 60);
