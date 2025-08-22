@@ -60,11 +60,12 @@ canvas.addEventListener("touchstart", function(e) {
   let fakeEvent = {
     clientX: touch.clientX,
     clientY: touch.clientY
-  };
+  }
   checkCollectibleClick(fakeEvent);
   checkHourglassClick(fakeEvent);
   e.preventDefault(); // stop scrolling/zooming
 });
+}
 
 function loadScene(sceneNumber) {
   if (timerInterval) clearInterval(timerInterval);
@@ -213,27 +214,6 @@ if (!c.found && distance < c.size/2) {
   collected++;
   successChime.play();
 }
-
-      // Play chime sound
-      successChime.play();
-
-      // Add floating +1 effect
-      floatingTexts.push({
-        text: "+1",
-        x: c.x,
-        y: c.y,
-        alpha: 1.0
-      });
-
-      if (collectibles.every(c => c.found)) {
-        deprimio.active = false;
-        clearInterval(timerInterval);
-        setTimeout(nextScene, 1000);
-      }
-    }
-  });
-}
-
         // Play chime sound
         successChime.play();
 
@@ -251,9 +231,6 @@ if (!c.found && distance < c.size/2) {
           setTimeout(nextScene, 1000);
         }
       }
-    }
-  });
-}
 
 function checkHourglassClick(e) {
   if (gameOver || adsUsed) return;
