@@ -9,7 +9,7 @@ A hidden-object puzzle game where you help Bronita, Luceo, and Lemona recover fi
 
 ## Copyright
 © 2025 Esterina Peka Studio. All Rights Reserved.  
-Author link: https://linktr.ee/esterina.peka_studio
+Author link: https://linktr.ee/five_stars_studio
 
 ## Terms
 - Personal entertainment only.
